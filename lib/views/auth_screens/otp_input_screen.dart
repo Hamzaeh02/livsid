@@ -5,12 +5,15 @@ import 'package:sizer/sizer.dart';
 
 import '../../components/custom_button.dart' show CustomButton;
 import '../../constants/constants_widgets.dart';
+import '../../controllers/auth_controller.dart';
+import '../../widgets/util.dart';
 
 class OtpInputScreen extends StatelessWidget {
   const OtpInputScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final AuthController authController = Get.find<AuthController>();
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,6 +83,8 @@ class OtpInputScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: TextField(
+                      controller: authController.forgotPassword,
+
                       decoration: InputDecoration(
                         hintText: 'you@gmail.com', // hint text
                         border: InputBorder.none,     // Container ke border ka use ho
@@ -109,7 +114,7 @@ class OtpInputScreen extends StatelessWidget {
               width: 90.w,
               fontFamily: "Poppins",
               onTap: () {
-                Get.toNamed('/Verification'); // yaha apni next screen ka widget name do
+                authController.sendOtp(); // Ab ye direct controller se email utha lega
               },
             ),
           ),

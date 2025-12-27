@@ -29,33 +29,21 @@ class SearchScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+          padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               /// LOGO
-              Center(
-                child: Image.asset(
-                  'assets/icon/logo.png',
-                  height: 7.h,
-                  width: 15.w,
-                ),
-              ),
+
               SizedBox(height: 1.h),
 
-              customText(
-                fontFamily: "SF Pro",
-                text: "Search",
-                fontSize: 17.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-              ),
+
               SizedBox(height: 1.h),
 
               /// SEARCH FIELD
               Container(
                 height: 5.5.h,
-                padding: EdgeInsets.symmetric(horizontal: 2.w),
+                padding: EdgeInsets.symmetric(horizontal: 2.w,vertical: 1.h),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(25),
                   color: Colors.black,
@@ -78,7 +66,7 @@ class SearchScreen extends StatelessWidget {
                         },
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 13.sp,
+                          fontSize: 14.sp,
                           fontFamily: "SF Pro",
                         ),
                         cursorColor: Colors.white,
@@ -95,7 +83,10 @@ class SearchScreen extends StatelessWidget {
                             color: Colors.white54,
                             fontFamily: "SF Pro",
                           ),
-                          contentPadding:  EdgeInsets.only(bottom: 4.w),
+                          isDense: true,
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: 0.7.h,
+                          ),
                         ),
                       ),
                     ),

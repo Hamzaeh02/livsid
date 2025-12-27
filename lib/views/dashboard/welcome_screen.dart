@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:livsd/outh_file/local_db_key.dart';
+import 'package:livsd/utils/shared_prefrences_methods.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
@@ -22,194 +24,182 @@ final WelcomeController controller = Get.put(WelcomeController());
 class _WelcomeScreenState extends State<WelcomeScreen> {
   int _selectedIndex = 0;
   @override
+  bool _isDialogShowing = false;
+  bool _isDialogLogicRunning = false;
+
+  @override
   void initState() {
     super.initState();
-
-    // Delay to ensure screen is rendered before showing dialogs
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkAndShowDialogs();
     });
   }
 
-  // ✅ Check if dialogs were shown before
   Future<void> _checkAndShowDialogs() async {
+    if (_isDialogShowing) return; // Agar pehle se dikh raha hai toh rukh jao
+
     final prefs = await SharedPreferences.getInstance();
     final bool locationShown = prefs.getBool('locationDialogShown') ?? false;
     final bool notificationShown = prefs.getBool('notificationDialogShown') ?? false;
 
     if (!locationShown) {
+      _isDialogShowing = true;
       _showLocationDialog();
       await prefs.setBool('locationDialogShown', true);
     } else if (!notificationShown) {
+      _isDialogShowing = true;
       _showNotificationDialog();
       await prefs.setBool('notificationDialogShown', true);
     }
   }
-
   // Google Location dialog
 // ✅ First Dialog: Location
+  // ✅ First Dialog: Location
   void _showLocationDialog() {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.transparent, // Background transparent rakha hai taake design clean lage
         child: Stack(
-          children: [ Container(
-            height: 52.h,
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Center(
+          alignment: Alignment.topCenter,
+          clipBehavior: Clip.none, // Isse icon boundary se bahar nikal sakta hai
+          children: [
+            // Main Container
+            Container(
+              width: 85.w,
+              padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 5.w),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(height: 2.h),
-                  Image.asset('assets/icon/dailboxlogo.png', fit: BoxFit.cover),
+                  SizedBox(height: 5.h), // Top icon ke liye space
+
+                  // Center Logo
+                  Image.asset(
+                      'assets/icon/dailboxlogo.png',
+                      height: 13.h,
+                      fit: BoxFit.contain
+                  ),
+
                   SizedBox(height: 2.h),
                   customText(
                     text: "Location",
                     fontSize: 20.sp,
                     color: black1,
                     fontWeight: FontWeight.w600,
-                    fontFamily: "Inter",
                   ),
-                  SizedBox(height: 2.h),
-                  Center(
-                    child: customText(
-                      text: "Allow maps to access your",
-                      fontSize: 17.sp,
-                      color: black2,
-                      fontFamily: "Inter",
-                    ),
+                  SizedBox(height: 1.5.h),
+                  customText(
+                    text: "Allow maps to access your location while you use the app?",
+                    fontSize: 16.sp,
+                    color: black2,
+                    textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 0.1.h),
-                  Center(
-                    child: customText(
-                      text: "location while you use the app?",
-                      fontSize: 17.sp,
-                      color: black2,
-                      fontFamily: "Inter",
-                    ),
-                  ),
-                  SizedBox(height: 2.7.h),
+                  SizedBox(height: 4.h),
 
-                  // ✅ Continue button
+                  // Continue Button
                   CustomButton(
                     borderRadius: BorderRadius.circular(40),
                     text: "Continue",
-                    btnTextColor: whiteColors,
+                    btnTextColor: Colors.white,
                     fontWeight: FontWeight.bold,
-                    height: 5.5.h,
-                    width: 72.w,
-                    fontFamily: "Poppins",
+                    height: 6.h,
+                    width: double.infinity,
                     onTap: () {
-                      Get.back(); // close Location dialog
-                      _showNotificationDialog(); // show Notification dialog next
+                      Get.back();
+                      _showNotificationDialog();
                     },
-                    btnColor: null,
                     gradientColor: LinearGradient(
                       colors: [Color(0xFF00BBFF), Color(0xFF26AFE9)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
                     ),
                   ),
                   SizedBox(height: 1.5.h),
 
-                  // ✅ Skip button
+                  // Skip Button
                   CustomButton(
                     borderRadius: BorderRadius.circular(40),
                     text: "Skip for now",
-                    btnTextColor: fullblack,
-                    borderColor: fullblack,
-                    height: 5.5.h,
-                    width: 72.w,
-                    fontFamily: "Inter",
-                    btnColor: whiteColors,
+                    btnTextColor: Colors.black,
+                    borderColor: Colors.black,
+                    height: 6.h,
+                    width: double.infinity,
+                    btnColor: Colors.white,
                     onTap: () {
-                      Get.back(); // close Location dialog
-                      _showNotificationDialog(); // show Notification dialog next
+                      Get.back();
+                      _showNotificationDialog();
                     },
                   ),
                 ],
               ),
             ),
-          ),
+
+            // Top Floating Location Icon (Jo pehle miss ho raha tha)
             Positioned(
-              top:3.5.h,
-              left
-                  : 29.w,
-
-              child:
-
-            Image.asset('assets/png/locations.png', fit: BoxFit.cover),
-
-
+              top: 7.h, // Isse icon thora sa box se bahar float karega
+              child: Image.asset(
+                  'assets/png/locations.png',
+                  height: 10.h,
+                  fit: BoxFit.contain
+              ),
             ),
-        ],
+          ],
         ),
       ),
     );
   }
-
-
 // ✅ Second Dialog: Notification
   void _showNotificationDialog() {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: Container(
-          height: 52.h,
-          padding: EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Center(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 6.w),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: 2.h),
-                Image.asset('assets/icon/dailboxlogo2.png', fit: BoxFit.cover),
+                SizedBox(height: 1.h),
+                // Notification Icon
+                Image.asset(
+                    'assets/icon/dailboxlogo2.png',
+                    height: 12.h,
+                    fit: BoxFit.contain
+                ),
                 SizedBox(height: 2.h),
                 customText(
                   text: "Notification",
                   fontSize: 20.sp,
                   color: black1,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: "Inter",
+                  fontWeight: FontWeight.bold,
                 ),
-                SizedBox(height: 2.h),
+                SizedBox(height: 1.5.h),
                 customText(
-                  text: "Please enable notifications to",
-                  fontSize: 17.sp,
+                  text: "Please enable notifications to receive updates and reminders",
+                  fontSize: 16.sp,
                   color: black2,
-                  fontFamily: "Inter",
+                  textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 0.1.h),
-                customText(
-                  text: "receive updates and reminders",
-                  fontSize: 17.sp,
-                  color: black2,
-                  fontFamily: "Inter",
-                ),
-                SizedBox(height: 3.h),
+                SizedBox(height: 4.h),
 
-                // ✅ Turn on button
+                // Turn On Button
                 CustomButton(
                   borderRadius: BorderRadius.circular(40),
                   text: "Turn on",
-                  btnTextColor: whiteColors,
+                  btnTextColor: Colors.white,
                   fontWeight: FontWeight.bold,
-                  height: 5.5.h,
-                  width: 72.w,
-                  fontFamily: "Poppins",
+                  height: 6.h,
+                  width: double.infinity,
                   onTap: () {
-                    Get.back(); // closes Notification dialog
+                    Get.back();
+                    // Add your notification permission logic here
                   },
-                  btnColor: null,
                   gradientColor: LinearGradient(
                     colors: [Color(0xFF00BBFF), Color(0xFF26AFE9)],
                     begin: Alignment.topLeft,
@@ -218,19 +208,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 ),
                 SizedBox(height: 1.5.h),
 
-                // ✅ Skip button
+                // Skip Button
                 CustomButton(
                   borderRadius: BorderRadius.circular(40),
                   text: "Skip for now",
-                  btnTextColor: fullblack,
-                  borderColor: fullblack,
-                  height: 5.5.h,
-                  width: 72.w,
-                  fontFamily: "Inter",
-                  btnColor: whiteColors,
-                  onTap: () {
-                    Get.back(); // closes Notification dialog
-                  },
+                  btnTextColor: Colors.black,
+                  borderColor: Colors.black,
+                  height: 6.h,
+                  width: double.infinity,
+                  btnColor: Colors.white,
+                  onTap: () => Get.back(),
                 ),
               ],
             ),
@@ -239,8 +226,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       ),
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -270,7 +255,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               padding: EdgeInsets.symmetric(vertical: 40, horizontal: 10),
               child: Column(
                 children: [
-                  Image.asset('assets/icon/logo.png', height: 7.h, width: 15.w),
+
                   Profile('assets/icon/profile.png', "Tony"),
                   SizedBox(height: 1.h),
                   Stack(
@@ -902,9 +887,13 @@ class DiscountCard extends StatelessWidget {
 
 // ----------------- Profile Widget -----------------
 Widget Profile(String? image, String? name, {String weather = "28°"}) {
+  final prefs = SharedPreferencesMethod.storage;
+  final username = prefs.getString(LocalDBKeys.USERFULLNAME) ?? "User"; // Null safety
+
   return Row(
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [
+      // 1. Profile Image
       ClipRRect(
         borderRadius: BorderRadius.circular(50),
         child: Image.asset(
@@ -914,81 +903,92 @@ Widget Profile(String? image, String? name, {String weather = "28°"}) {
           fit: BoxFit.cover,
         ),
       ),
-      SizedBox(width: 1.5.h),
-      Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            children: [
-              customText(
-                text: "Welcome Back ",
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-                fontFamily: "SF Pro",
-                color: fullblack,
+      SizedBox(width: 1.5.w),
+
+      // 2. Text Section (WELCOME BACK + USERNAME)
+      // Expanded lagane se ye bachi hui jagah mein rahega aur pixel nahi pharega
+      Expanded(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Text.rich se text auto-wrap (next line) ho jayega
+            Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: "Welcome Back ",
+                    style: TextStyle(
+                      fontSize: 15.sp, // Thoda adjust kiya takay screen pe fit aaye
+                      fontWeight: FontWeight.w600,
+                      fontFamily: "SF Pro",
+                      color: Colors.black,
+                    ),
+                  ),
+                  TextSpan(
+                    text:username ,
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: "SF Pro",
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
               ),
-              customText(
-                text: name,
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-                fontFamily: "SF Pro",
-              ),
-            ],
-          ),
-          customText(
-            text: "Ready for the weekend?",
-            fontSize: 15.sp,
-            fontFamily: "SF Pro",
-            color: brown,
-          ),
-        ],
-      ),
-      Spacer(),
-      Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          GestureDetector(
-            onTap: () {
-              Get.toNamed('/WeatherPage');
-            },
-            child: Image.asset(
-              'assets/png/weather.png',
-              height: 5.h,
-              width: 10.w,
-              fit: BoxFit.contain,
+              softWrap: true,
+              overflow: TextOverflow.visible,
             ),
-          ),
-
-
-          customText(
-            text: weather,
-            fontSize: 15.sp,
-            fontWeight: FontWeight.w600,
-            fontFamily: "SF Pro",
-            color: const Color(0xAD000000),
-          ),
-        ],
+            customText(
+              text: "Ready for the weekend?",
+              fontSize: 14.sp,
+              fontFamily: "SF Pro",
+              color: Colors.brown,
+            ),
+          ],
+        ),
       ),
-      SizedBox(width: 2.w),
+
+      // 3. Weather Section
+      Padding(
+        padding: EdgeInsets.symmetric(horizontal: 2.w),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+              onTap: () => Get.toNamed('/WeatherPage'),
+              child: Image.asset(
+                'assets/png/weather.png',
+                height: 4.h,
+                width: 8.w,
+                fit: BoxFit.contain,
+              ),
+            ),
+            customText(
+              text: weather,
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w600,
+              fontFamily: "SF Pro",
+              color: const Color(0xAD000000),
+            ),
+          ],
+        ),
+      ),
+
+      // 4. Notification Bell
       Container(
-        width: 14.w,
-        height: 6.5.h,
+        width: 12.w,
+        height: 5.5.h,
         decoration: BoxDecoration(
           color: const Color(0xFFF6F6F6),
-          borderRadius: BorderRadius.circular(21),
-          border: Border.all(
-            color: const Color(0xFFE6E6E6),
-            width: 1,
-          ),
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: const Color(0xFFE6E6E6)),
         ),
         child: Center(
           child: Image.asset(
             'assets/icon/bellnotification.png',
-            height: 3.h,
-            width: 6.w,
+            height: 2.5.h,
+            width: 5.w,
             fit: BoxFit.contain,
           ),
         ),

@@ -7,27 +7,38 @@ import 'package:sizer/sizer.dart';
 import '../../components/custom_button.dart';
 import '../../constants/color_constants.dart';
 import '../../constants/constants_widgets.dart';
+import '../../controllers/wish_list_controller.dart';
 import '../../widgets/rating_widget.dart';
 
 class WishListScreen extends StatelessWidget {
-  const WishListScreen({super.key});
+   WishListScreen({super.key});
+  final WishlistController controller =
+  Get.put(WishlistController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
 
-      body: SecondScreen(),
+      body: Obx((){
+        if(controller.wishlistItems.isEmpty)
+          {
+            return firstscreen();
+          }
+        else
+          return SecondScreen();
+
+      }
+      ),
     );
   }
 }
 
 Widget firstscreen(){
   return Padding(
-    padding: EdgeInsets.symmetric(horizontal: 4.w,vertical: 3.h),
+    padding: EdgeInsets.symmetric(horizontal: 4.w,vertical: 6.h),
     child: Column(
       children: [
 
-        Image.asset('assets/icon/logo.png', height: 7.h, width: 15.w),
         Row(
           children: [
             Container(

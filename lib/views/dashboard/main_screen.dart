@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:livsd/views/auth_screens/logout.dart';
 import 'package:livsd/views/dashboard/wish_list_screen.dart';
 import 'package:sizer/sizer.dart';
 
@@ -21,7 +22,8 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = [
     const WelcomeScreen(),
      SearchScreen(),
-    const WishListScreen(),
+     WishListScreen(),
+LogoutScreen(),
 
   ];
 

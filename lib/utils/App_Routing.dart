@@ -21,8 +21,9 @@ class AppRoutes {
     GetPage(name: '/Login', page: () =>  LoginScreen()),
     GetPage(name: '/Signup', page: () =>  Signup()),
     GetPage(name: '/Otp', page: () =>  OtpInputScreen()),
+    GetPage(name: '/navbar', page: () =>  MainScreen()),
     GetPage(name: '/Verification', page: () =>  VerificationCodeScreen()),
-    GetPage(name: '/SucessScreen', page: () =>  SucessScreen()),
+    GetPage(name: '/sucess', page: () =>  SucessScreen()),
     GetPage(name: '/WelcomeScreen', page: () =>  WelcomeScreen()),
     // Option 2: Change GetPage name to match navigation
     GetPage(

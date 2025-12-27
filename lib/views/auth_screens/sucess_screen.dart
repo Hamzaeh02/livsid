@@ -38,7 +38,7 @@ class SucessScreen extends StatelessWidget {
               SizedBox(height: 0.2.h,),
               customText(
                 text: "Congratulations! You have been",
-                fontSize: 18.sp,
+                fontSize: 15.sp,
 
                 color: otpscreenblack1,
                 fontFamily: "Poppins",
@@ -48,7 +48,7 @@ class SucessScreen extends StatelessWidget {
               ),
               customText(
                 text: "successfully authenticated",
-                fontSize: 18.sp,
+                fontSize: 15.sp,
 
                 color: otpscreenblack1,
                 fontFamily: "Poppins",
@@ -69,7 +69,7 @@ class SucessScreen extends StatelessWidget {
                 width: 92.w,
                 fontFamily: "Poppins",
                 onTap: () {
-                  Get.toNamed('/MainScreen');// TODO: Add GetX navigation here
+                  Get.toNamed('/Login');// TODO: Add GetX navigation here
                 },
               ),
 
