@@ -26,7 +26,7 @@ class SearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: whiteColor,
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.h),
@@ -46,7 +46,7 @@ class SearchScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 2.w,vertical: 1.h),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(25),
-                  color: Colors.black,
+                  color: blackColor,
                 ),
                 child: Row(
                   children: [
@@ -65,11 +65,11 @@ class SearchScreen extends StatelessWidget {
                           controller.setShowHistory(true); // Show history on tap
                         },
                         style: TextStyle(
-                          color: Colors.white,
+                          color: whiteColor,
                           fontSize: 14.sp,
                           fontFamily: "SF Pro",
                         ),
-                        cursorColor: Colors.white,
+                        cursorColor: whiteColor,
                         textInputAction: TextInputAction.search,
                         onSubmitted: (value) {
                           controller.executeSearch(value);
@@ -100,7 +100,7 @@ class SearchScreen extends StatelessWidget {
                         height: 3.8.h,
                         width: 4.h,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: whiteColor,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Image.asset(
@@ -119,7 +119,7 @@ class SearchScreen extends StatelessWidget {
               Obx(() {
                 // condition yahan lagao
                 if (controller.isSearching.value) {
-                  return const SizedBox(); // search ho rahi hai → filters hide
+                  return const SizedBox.shrink(); // search ho rahi hai → filters hide
                 }
 
                 return SingleChildScrollView(
@@ -152,8 +152,8 @@ class SearchScreen extends StatelessWidget {
                                 text: filters[index],
                                 fontSize: 14.sp,
                                 color: isSelected
-                                    ? Colors.white
-                                    : Colors.grey,
+                                    ? whiteColor
+                                    : greyColor,
                               ),
                             ),
                           ),
@@ -225,7 +225,7 @@ class SearchScreen extends StatelessWidget {
                               text: "Result for: ",
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w500,
-                              color: Colors.black,
+                              color: blackColor,
                             ),
                             SizedBox(width: 1.w),
                             customText(
@@ -261,14 +261,14 @@ class SearchScreen extends StatelessWidget {
                               text: "Result for: ",
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w500,
-                              color: Colors.black,
+                              color: blackColor,
                             ),
                             SizedBox(width: 1.w),
                             customText(
                               text: controller.currentQuery.value,
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w500,
-                              color: Colors.grey,
+                              color: greyColor,
                             ),
                           ],
                         ),
@@ -303,7 +303,7 @@ class SearchScreen extends StatelessWidget {
                         text: "Location",
                         fontSize: 15.sp,
                         fontWeight: FontWeight.w500,
-                        color: Colors.grey[700],
+                        color: greyColor[700],
                       ),
                       SizedBox(height: 1.h),
                       Row(
@@ -317,7 +317,7 @@ class SearchScreen extends StatelessWidget {
                           customText(
                             text: "San Diego, CA",
                             fontSize: 16.sp,
-                            color: Colors.black,
+                            color: blackColor,
                           ),
                           SizedBox(width: 1.w),
                           Image.asset(
@@ -332,11 +332,11 @@ class SearchScreen extends StatelessWidget {
                         text: "Popular Searches",
                         fontSize: 17.sp,
                         fontWeight: FontWeight.w500,
-                        color: Colors.black,
+                        color: blackColor,
                       ),
                       SizedBox(height: 2.h),
                       SizedBox(
-                        height: 23.h,
+                        height: 22.h,
                         child: ListView.separated(
                           scrollDirection: Axis.horizontal,
                           itemCount: controller.nearbyOffers.length,
@@ -351,12 +351,12 @@ class SearchScreen extends StatelessWidget {
                           },
                         ),
                       ),
-                      SizedBox(height: 2.h),
+
                       customText(
                         text: "Nearby Offers",
                         fontSize: 17.sp,
                         fontWeight: FontWeight.w600,
-                        color: Colors.black,
+                        color: blackColor,
                       ),
                       SizedBox(height: 1.h),
                       ...controller.filteredOffers.map(
@@ -578,15 +578,15 @@ Widget searchCard({
   required String location,
 }) {
   return SizedBox(
-    width: 70.w,
+    width: 63.w,
     child: Stack(
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: Image.asset(
             imagePath,
-            height: 22.h,
-            width: 70.w,
+            height: 19.h,
+            width: 60.w,
             fit: BoxFit.cover,
           ),
         ),
@@ -605,7 +605,7 @@ Widget searchCard({
 
         /// LOCATION CHIP
         Positioned(
-          bottom: 2.h,
+          bottom: 5.h,
           left: 7.w,
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 2.w),

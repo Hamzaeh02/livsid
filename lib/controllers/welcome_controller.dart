@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livsd/outh_file/local_db_key.dart';
 import 'package:livsd/utils/shared_prefrences_methods.dart';
@@ -5,34 +6,47 @@ import 'package:livsd/utils/shared_prefrences_methods.dart';
 class WelcomeController extends GetxController {
   var currentPage = 0.obs;
   var selectedIndex = 0.obs;
-  var bottomNavIndex = 0.obs;// already exists, we will use it for category selection
-  final pref = SharedPreferencesMethod.storage;
-  @override
-  void onReady() { // onInit ki jagah onReady use karein
-    super.onReady();
-    _startTimer();
-  }
-  void _startTimer() {
-    // Safe tareeke se token lein
-    final token = pref.getString(LocalDBKeys.TOKEN);
-    print("Token is: $token");
+  var bottomNavIndex = 0.obs;
 
-    // Logic: Agar token null nahi hai aur khali bhi nahi hai
-    if (token != null && token.isNotEmpty) {
-      // Agar login hai to foran navbar pe jayein
-      Get.offAllNamed("/navbar");
-    } else {
-      // Agar login nahi hai to 3 second baad login pe jayein
-      Future.delayed(const Duration(seconds: 3), () {
-        Get.offAllNamed('/Login');
-      });
+  // Use a getter to handle potential nulls safely
+  final pref = SharedPreferencesMethod.storage;
+
+  @override
+  void onReady() {
+    super.onReady();
+    _checkTokenAndNavigate();
+  }
+
+  void _checkTokenAndNavigate() {
+    try {
+      // 1. Safety Check: If storage is somehow null, don't crash
+      if (pref == null) {
+        debugPrint("Error: SharedPreferences not initialized");
+        Future.delayed(const Duration(seconds: 2), () => Get.offAllNamed('/Login'));
+        return;
+      }
+
+      final token = pref.getString(LocalDBKeys.TOKEN);
+      print("Token is: $token");
+
+      if (token != null && token.isNotEmpty) {
+        // Use a small delay to ensure the UI tree is ready for navigation
+        Future.delayed(Duration.zero, () {
+          Get.offAllNamed("/navbar");
+        });
+      } else {
+        Future.delayed(const Duration(seconds: 3), () {
+          Get.offAllNamed('/Login');
+        });
+      }
+    } catch (e) {
+      debugPrint("Welcome Screen Crash caught: $e");
+      // Fallback to login if something fails
+      Get.offAllNamed('/Login');
     }
   }
 
-  // -----------------------------
-  // CATEGORY SELECTION LOGIC
-  // -----------------------------
   void selectCategory(int index) {
-    selectedIndex.value = index; // update selected button index
+    selectedIndex.value = index;
   }
 }

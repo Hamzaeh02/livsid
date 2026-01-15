@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../controllers/auth_controller.dart';
+import '../../utils/shared_prefrences_methods.dart';
 // Import your login screen here
 // import 'package:your_app/screens/login_screen.dart';
 
@@ -14,7 +15,7 @@ class LogoutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AuthController authController = Get.find<AuthController>();
-
+    final pref = SharedPreferencesMethod.storage;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Account Settings"),
@@ -47,7 +48,9 @@ class LogoutScreen extends StatelessWidget {
                   ),
                   onPressed: () {
                     // Calling the logout function here
-                    authController.logout();
+                    SharedPreferencesMethod.clearLocalStorage();
+                    Get.offAllNamed('/Login');
+                    // authController.logout();
                   },
                   child: const Text(
                     "LOGOUT NOW",

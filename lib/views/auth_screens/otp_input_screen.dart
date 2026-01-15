@@ -25,7 +25,7 @@ class OtpInputScreen extends StatelessWidget {
           width: 20.h,  // keep square
           decoration: BoxDecoration(
             // optional border for styling
-            border: Border.all(color: Colors.blueAccent, width: 2),
+
             borderRadius: BorderRadius.circular(12),
           ),
           child: Image.asset(

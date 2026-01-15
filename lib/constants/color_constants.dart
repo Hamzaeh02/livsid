@@ -31,11 +31,15 @@ const abababColor = Color(0xFFABABAB);
 const weatherclr =Color(0xFF1D2837);
 const locationLogoColor = Color(0xFF468DC7);
 const applegreen =  Color(0xFF1DB100);
-const steelblue =Color(0xFF468DC7);const darkshade = Color(0xFF37474F)
-;
+const steelblue =Color(0xFF468DC7);const darkshade = Color(0xFF37474F);
+const lightBlack = const Color(0x80000000);
+
+
 
 
 const slateGray = Color(0xFF747D8D);
+const blueGray = Colors.blueGrey;
+const amber = Colors.amber;
 
 
 

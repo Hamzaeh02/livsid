@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:livsd/constants/color_constants.dart';
 import 'package:sizer/sizer.dart';
 
 class StarRating extends StatelessWidget {
@@ -11,8 +12,8 @@ class StarRating extends StatelessWidget {
     Key? key,
     required this.rating,
     this.starSize = 16,
-    this.filledColor = Colors.amber,
-    this.unfilledColor = Colors.grey,
+    this.filledColor = amber,
+    this.unfilledColor = greyColor,
   }) : super(key: key);
 
   @override

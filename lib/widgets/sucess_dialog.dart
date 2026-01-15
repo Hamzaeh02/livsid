@@ -2,7 +2,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
-import '../../constants/color_constants.dart'; // Aapke colors ke liye
+import '../../constants/color_constants.dart';
+import '../constants/constants_widgets.dart';
+// Apna custom text widget ka file import zaroor karein
+// import '../../widgets/custom_text.dart';
 
 void successDialog(
     BuildContext context,
@@ -15,7 +18,7 @@ void successDialog(
     context: context,
     barrierDismissible: false,
     builder: (context) => BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5), // Background Blur
+      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
         backgroundColor: Colors.white,
@@ -23,7 +26,7 @@ void successDialog(
           padding: EdgeInsets.all(20),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(25),
-            gradient: LinearGradient(
+            gradient: const LinearGradient(
               colors: [Colors.white, Color(0xFFF8FBFF)],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -32,7 +35,7 @@ void successDialog(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // ✅ Top Animated-like Icon
+              // ✅ Top Icon
               Container(
                 height: 80,
                 width: 80,
@@ -48,43 +51,37 @@ void successDialog(
               ),
               SizedBox(height: 3.h),
 
-              // ✅ Title
-              Text(
-                title,
+              // ✅ Custom Title Text
+              customText(
+                text: title,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                  color: darkblue, // Aapka primary dark color
-                  fontFamily: "SF Pro",
-                ),
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+                color: darkblue,
               ),
               SizedBox(height: 1.5.h),
 
-              // ✅ Message
-              Text(
-                message,
+              // ✅ Custom Message Text
+              customText(
+                text: message,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 13.sp,
-                  color: Colors.grey[600],
-                  fontFamily: "Inter",
-                ),
+                fontSize: 13.sp,
+                color: Colors.grey[600],
               ),
               SizedBox(height: 4.h),
 
               // ✅ Premium Action Button
               GestureDetector(
                 onTap: () {
-                  Get.back(); // Dialog band karein
-                  onTap();    // Function call karein
+                  Get.back();
+                  onTap();
                 },
                 child: Container(
                   height: 6.h,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
-                    gradient: LinearGradient(
+                    gradient: const LinearGradient(
                       colors: [Color(0xFF00BBFF), Color(0xFF26AFE9)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -93,19 +90,16 @@ void successDialog(
                       BoxShadow(
                         color: Colors.blue.withOpacity(0.3),
                         blurRadius: 10,
-                        offset: Offset(0, 5),
+                        offset: const Offset(0, 5),
                       ),
                     ],
                   ),
                   child: Center(
-                    child: Text(
-                      buttonText,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: "Poppins",
-                      ),
+                    child: customText(
+                      text: buttonText,
+                      color: whiteColor,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),

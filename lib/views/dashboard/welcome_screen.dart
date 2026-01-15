@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:livsd/models/promoted_product.dart';
 import 'package:livsd/outh_file/local_db_key.dart';
 import 'package:livsd/utils/shared_prefrences_methods.dart';
+import 'package:livsd/views/dashboard/search_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../components/custom_button.dart';
 import '../../constants/color_constants.dart';
 import '../../constants/constants_widgets.dart';
+import '../../controllers/product_controller.dart';
+import '../../controllers/search_controller.dart';
 import '../../controllers/welcome_controller.dart';
 import '../../widgets/custom_bottom_navigation.dart';
+import '../../widgets/cutout_clipper.dart';
+import '../../widgets/tab_indicator.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -19,6 +25,11 @@ class WelcomeScreen extends StatefulWidget {
 
 }
 final WelcomeController controller = Get.put(WelcomeController());
+final WelcomeControllers shopLocalController = Get.put(WelcomeControllers());
+
+final ProductController productController = Get.put(ProductController());
+final PageController pageController = PageController(  viewportFraction: 0.45,);
+final ValueNotifier<int> currentIndexNotifier = ValueNotifier<int>(0);
 
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
@@ -26,6 +37,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   bool _isDialogShowing = false;
   bool _isDialogLogicRunning = false;
+
 
   @override
   void initState() {
@@ -70,7 +82,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               width: 85.w,
               padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 5.w),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: whiteColor,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Column(
@@ -105,7 +117,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   CustomButton(
                     borderRadius: BorderRadius.circular(40),
                     text: "Continue",
-                    btnTextColor: Colors.white,
+                    btnTextColor: whiteColor,
                     fontWeight: FontWeight.bold,
                     height: 6.h,
                     width: double.infinity,
@@ -123,11 +135,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   CustomButton(
                     borderRadius: BorderRadius.circular(40),
                     text: "Skip for now",
-                    btnTextColor: Colors.black,
-                    borderColor: Colors.black,
+                    btnTextColor: blackColor,
+                    borderColor: blackColor,
                     height: 6.h,
                     width: double.infinity,
-                    btnColor: Colors.white,
+                    btnColor: whiteColor,
                     onTap: () {
                       Get.back();
                       _showNotificationDialog();
@@ -192,7 +204,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 CustomButton(
                   borderRadius: BorderRadius.circular(40),
                   text: "Turn on",
-                  btnTextColor: Colors.white,
+                  btnTextColor: whiteColor,
                   fontWeight: FontWeight.bold,
                   height: 6.h,
                   width: double.infinity,
@@ -212,11 +224,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 CustomButton(
                   borderRadius: BorderRadius.circular(40),
                   text: "Skip for now",
-                  btnTextColor: Colors.black,
-                  borderColor: Colors.black,
+                  btnTextColor: blackColor,
+                  borderColor: blackColor,
                   height: 6.h,
                   width: double.infinity,
-                  btnColor: Colors.white,
+                  btnColor: whiteColor,
                   onTap: () => Get.back(),
                 ),
               ],
@@ -229,18 +241,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, String>> productList = [
-      {
-        'name': 'Breakfast Republic',
-        'image': 'assets/png/foods.png',
-        'area': 'Scripps Ranch',
-      },
-      {
-        'name': 'Tacos El Gordo',
-        'image': 'assets/png/food4.png',
-        'area': 'National City',
-      },
-    ];
+
     return Scaffold(
       extendBody: true,
     // ya apna page color
@@ -285,7 +286,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         ],
                       ),
                       Positioned(
-                        right: 1,
+                        right: 4,
                         bottom: 2,
                         top: 0,
                         child: Image.asset(
@@ -358,7 +359,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                     ? Color(0xFF468DC7)
                                     : whiteColors,
                                 borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: otpscreenblack1, width: 1),
+                                border: Border.all(color: lightBlack, width: 0.2),
                               ),
                               child: Center(
                                 child: customText(
@@ -376,31 +377,118 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     ],
                   ),
 
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 1.w),
-                      child: SizedBox(
-                        height: 33.h,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: List.generate(productList.length, (index) {
-                              final item = productList[index];
+                  Obx(() {
+                    // Loader
+                    if (productController.isLoading.value &&
+                        productController.allPromotedProducts.isEmpty) {
+                      return SizedBox(
+                        height: 30.h,
+                        child: const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
+
+                    // Empty state
+                    if (productController.allPromotedProducts.isEmpty) {
+                      return SizedBox(
+                        height: 30.h,
+                        child: const Center(
+                          child: Text("No Products Found"),
+                        ),
+                      );
+                    }
+
+                    return Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 1.w),
+                        child: SizedBox(
+                          height: 30.h,
+                          child: PageView.builder(
+                            controller: pageController,
+                            padEnds: false, // 👈 LEFT SPACE FIX
+                            itemCount: productController.allPromotedProducts.length,
+                            onPageChanged: (index) {
+                              currentIndexNotifier.value = index;
+                            },
+                            itemBuilder: (context, index) {
+                              final item =
+                              productController.allPromotedProducts[index];
+
                               return Padding(
                                 padding: EdgeInsets.only(right: 2.w),
-                                child: Card(
-                                  index: index,
-                                  productList: productList,
-                                  imagePath: item['image']!,
-                                  name: item['name']!,
-                                  area: item['area']!,
+                                child: SizedBox(
+                                  width: 40.w,
+                                  child: Card(
+                                    index: index,
+                                    imagePath: item.coverImage ?? "",
+                                    name: item.title ?? "No Title",
+                                    area: 'las vegas',
+                                    product: item,
+                                  ),
                                 ),
                               );
-                            }),
+                            },
                           ),
                         ),
                       ),
+                    );
+                  }),
+
+
+
+
+                  ValueListenableBuilder<int>(
+                    valueListenable: currentIndexNotifier,
+                    builder: (context, currentIndex, _) {
+                      return Column(
+                        children: [
+                          // Aapka Slider ya Image yahan hogi
+
+
+
+                          // Tab Indicators yahan call karein
+                          tabIndicators(currentIndex),
+
+                          SizedBox(height: 1.h),
+                        ],
+                      );
+                    },
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 10),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: customText(
+                        text: "Shop Local",
+                        fontSize: 17.sp,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "SF Pro",
+                        color: fullblackd,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 1.2.h),
+
+                  SizedBox(
+                    height: 22.h,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      padding: EdgeInsets.symmetric(horizontal: 1.w),
+                      itemCount: shopLocalController.nearbyOffers.length,
+                      // Bilkul mamuli gap ke liye
+                      separatorBuilder: (_, __) => SizedBox(width: 1),
+                      itemBuilder: (context, index) {
+                        final Map<String, dynamic> offer = shopLocalController.nearbyOffers[index];
+
+                        // SizedBox hata kar check karein agar card khud apni width manage kar raha hai
+                        return searchCard(
+                          imagePath: offer["image1"] ?? "",
+                          name: offer["name"] ?? "No Name",
+                          location: offer["location"] ?? "No Location",
+                        );
+                      },
                     ),
                   ),
 
@@ -433,13 +521,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           ],
                         ),
                         Positioned(
-                          right: -8,
+                          right: -7,
                           top: 0,
                           bottom: 1,
                           child: Center(
                             child: Image.asset(
                               'assets/icon/forwardlogo.png',
-                              height: 4.h,
+                              height: 3.1.h,
                               width: 6.w,
                             ),
                           ),
@@ -451,57 +539,45 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
 
                   Align(
-                    alignment: Alignment.centerLeft,
+                    alignment: Alignment.topLeft, // Isse top-left se start hoga
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 1.h, horizontal: 1.w),
                       child: SizedBox(
                         height: 72.h,
-                        child: Column(
-                          children: [
-                            // Row 1
-                            SizedBox(
-                              height: 25.h,
-                              child: Row(
-                                children: [
-                                  verticalCardStack(
-                                    imagePath: 'assets/png/oilchanges.png',
-                                    name: "Synthetic oil change",
-                                    price: "\$110.00",
-                                  ),
-                                  SizedBox(width: 2.w),
-                                  verticalCardStack(
-                                    imagePath: 'assets/png/eyelash.png',
-                                    name: "Full lash set",
-                                    price: "\$99.00",
-                                  ),
-                                ],
-                              ),
+                        child: Obx(() {
+                          if (productController.isLoading.value) {
+                            return const Center(child: CircularProgressIndicator());
+                          }
+
+                          if (productController.allProducts.isEmpty) {
+                            return const Center(child: Text("No products available"));
+                          }
+
+                          return GridView.builder(
+                            padding: EdgeInsets.zero, // ✅ STEP 1: Default padding khatam karein
+                            shrinkWrap: true,
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: productController.allProducts.length,
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 2.h,
+                              crossAxisSpacing: 2.w,
+                              mainAxisExtent: 25.h,
                             ),
-                            SizedBox(height: 2.h),
-                            // Row 2
-                            SizedBox(
-                              height: 25.h,
-                              child: Row(
-                                children: [
-                                  verticalCardStack(
-                                    imagePath: 'assets/png/oilchanges.png',
-                                    name: "Brake service",
-                                    price: "\$150.00",
-                                  ),
-                                  SizedBox(width: 2.w),
-                                  verticalCardStack(
-                                    imagePath: 'assets/png/eyelash.png',
-                                    name: "Car wash premium",
-                                    price: "\$45.00",
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                            itemBuilder: (context, index) {
+                              final product = productController.allProducts[index];
+
+                              return verticalCardStack(
+                                imagePath: product.coverImage ?? 'assets/png/placeholder.png',
+                                name: product.title ?? "No Name",
+                                price: "\$${product.price}",
+                              );
+                            },
+                          );
+                        }),
                       ),
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
@@ -544,26 +620,30 @@ Widget verticalCardStack({
       child:Stack(
         children: [
           // Card background and image
+          // Padding ke andar Image ko ClipPath se wrap karein
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(25),
-              child: Image.asset(
-                imagePath,
-                height: 15.h,
-                width: 40.w,
-                fit: BoxFit.cover,
+              child: ClipPath(
+                clipper: HeartCutoutClipper(), // Humara naya clipper
+                child: Image.network(
+                  imagePath,
+                  height: 15.h,
+                  width: 40.w,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
 
           // Top icon inside a container
           Positioned(
-            top: 1.5.h,
+            top: 1.2.h,
             right: 2.w,
             child: Container(
               height: 3.8.h,
-              width: 8.w,
+              width: 8.5.w,
               decoration: BoxDecoration(
                 color: whiteColors,
                 borderRadius: BorderRadius.circular(12),
@@ -613,8 +693,8 @@ Widget verticalCardStack({
             ),
           ),
           Positioned(
-            top: 20.h,
-            right: 2.w,
+            top: 19.5.h,
+            right: 3.w,
             child: Container(
               height: 4.h,
               width: 10.w,
@@ -649,22 +729,25 @@ Widget verticalCardStack({
 
 Widget Card({
   required int index,
-  required List productList,
+
+  required ProductData product, // Pura model yahan pass karein
+
   required String imagePath,
   required String name,
   required String area,
 }) {
-  return GestureDetector(
+  return  GestureDetector(
     onTap: () {
+      // Ab aap direct product.id use kar sakte hain
       Get.toNamed(
         '/ProductDetail',
-
+        arguments: product.id,
       );
-
+      print("Sending ID: ${product.id}");
     },
     child: Container(
       width: 45.w,
-      height: 35.h, // adjust as per your card size
+      height: 30.h, // adjust as per your card size
       decoration: BoxDecoration(
         color: Color(0xFF1F1F1F),
         borderRadius: BorderRadius.circular(10),
@@ -686,9 +769,9 @@ Widget Card({
             right: 0,
             child: ClipRRect(
               borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-              child: Image.asset(
+              child: Image.network(
                 imagePath,
-                height: 20.h,
+                height: 18.5.h,
                 width: 45.w,
                 fit: BoxFit.cover,
               ),
@@ -697,8 +780,8 @@ Widget Card({
 
           // Name Text
           Positioned(
-            top: 21.h,
-            left: 2.w,
+            top: 20.h,
+            left: 3.w,
             child: customText(
               text: name,
               fontSize: 15.sp,
@@ -710,8 +793,8 @@ Widget Card({
 
           // Row of 4 icons
           Positioned(
-            top: 23.h,
-            left: 2.w,
+            top: 21.2.h,
+            left: 3.w,
             child: Row(
               children: [
                 Image.asset(
@@ -748,7 +831,7 @@ Widget Card({
           // Bottom-left location icon + area text
           Positioned(
             bottom: 1.h,
-            left: 2.w,
+            left: 3.w,
             child: Row(
               children: [
                 Image.asset(

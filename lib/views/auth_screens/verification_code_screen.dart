@@ -105,10 +105,11 @@ class VerificationCodeScreen extends StatelessWidget {
                     fontSize: 14.sp,
                     color: otpscreenblack1,
                   ),
+                  // Locate the Resend OTP Section in your code
                   GestureDetector(
                     onTap: () {
-                      // Aap yahan controller.resendOtp() call kar sakte hain
-                      Get.snackbar("Success", "OTP Resent Successfully");
+                      // Call the function from your controller
+                      controller.handleResendOtp(context);
                     },
                     child: customText(
                       text: "Resend",
@@ -143,8 +144,8 @@ class VerificationCodeScreen extends StatelessWidget {
                       "Required",
                       "Please enter complete 6-digit code",
                       snackPosition: SnackPosition.BOTTOM,
-                      backgroundColor: Colors.red,
-                      colorText: Colors.white,
+                      backgroundColor: redColor,
+                      colorText: whiteColor,
                     );
                   }
                 },

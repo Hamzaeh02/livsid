@@ -22,7 +22,7 @@ class CustomBottomNavigation extends StatelessWidget {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.4),
+              color: blackColor.withOpacity(0.4),
               blurRadius: 25,
               offset: const Offset(0, 12),
             ),

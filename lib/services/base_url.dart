@@ -12,7 +12,7 @@ import '../../utils/utility.dart';
 import '../widgets/util.dart';
 
 class BaseService {
-  late String baseURL = "https://liv-sd-server-7gsy.vercel.app";
+  late String baseURL = "https://liv-sd-server-7gsy.vercel.app/";
   late String endPoint;
   late String Url = '$baseURL$endPoint';
   late String baseURLStripe = "";
@@ -80,11 +80,11 @@ class BaseService {
       if (response.body.isNotEmpty) {
         var jsonData = json.decode(response.body);
 
-        Utils.showToast(jsonData["message"] ?? "Something went wrong", true);
+        Utils.showToast(jsonData["msg"] ?? "Something went wrong", true);
 
         return {
           "success": false,
-          "message": jsonData["message"] ?? "Something went wrong",
+          "message": jsonData["msg"] ?? "Something went wrong",
           "statusCode": response.statusCode
         };
       }
@@ -150,11 +150,11 @@ class BaseService {
       // ---------- ERROR ----------
       if (response.body.isNotEmpty) {
         var jsonData = json.decode(response.body);
-        Utils.showToast(jsonData["message"] ?? "Something went wrong", true);
+        Utils.showToast(jsonData["msg"] ?? "Something went wrong", true);
         return {
           "success": false,
 
-          "message": jsonData["message"] ?? "Something went wrong",
+          "message": jsonData["msg"] ?? "Something went wrong",
           "statusCode": response.statusCode
         };
       }
@@ -221,10 +221,10 @@ class BaseService {
       // ---------- ERROR ----------
       if (response.body.isNotEmpty) {
         var jsonData = json.decode(response.body);
-        Utils.showToast(jsonData["message"] ?? "Something went wrong", true);
+        Utils.showToast(jsonData["msg"] ?? "Something went wrong", true);
         return {
           "success": false,
-          "message": jsonData["message"] ?? "Something went wrong",
+          "message": jsonData["msg"] ?? "Something went wrong",
           "statusCode": response.statusCode
         };
       }
@@ -289,17 +289,17 @@ class BaseService {
         }
 
         var jsonData = json.decode(response.body);
-        Utils.showToast(jsonData["message"] ?? "Deleted successfully", false);
+        Utils.showToast(jsonData["msg"] ?? "Deleted successfully", false);
         return {"success": true, ...jsonData};
       }
 
       // ---------- ERROR ----------
       if (response.body.isNotEmpty) {
         var jsonData = json.decode(response.body);
-        Utils.showToast(jsonData["message"] ?? "Deletion failed", true);
+        Utils.showToast(jsonData["msg"] ?? "Deletion failed", true);
         return {
           "success": false,
-          "message": jsonData["message"] ?? "Deletion failed",
+          "message": jsonData["msg"] ?? "Deletion failed",
           "statusCode": response.statusCode
         };
       }

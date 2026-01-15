@@ -159,7 +159,7 @@ String topImage, // positional
                             width: 3.h,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              color: Colors.black,
+                              color:blackColor,
                               borderRadius: BorderRadius.circular(30),
                             ),
                             child: Icon(

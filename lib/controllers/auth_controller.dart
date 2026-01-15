@@ -105,38 +105,37 @@ class AuthController extends GetxController {
         Get.offAllNamed('/navbar');
 
         Utils.showToast(response['msg'] ?? "Login successful", false);
-      } else {
-        Utils.showToast(response['msg'] ?? "Invalid credentials", true);
       }
     } catch (e) {
       Utils.showToast("Login Error: ${e.toString()}", true);
     }
   }
-  Future<void> logout() async {
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      // 1. Local storage se data delete karein
-      await prefs.remove('email');
-
-      await prefs.remove('locationDialogShown');
 
 
-      await prefs.remove('notificationDialogShown');
-      await prefs.remove('name');
-      // Agar sab kuch delete karna hai to: await prefs.clear();
 
-      // 2. GetX ki madad se Login screen par navigate karein
-      // Get.offAll() purani sari screens (history) ko khatam kar deta hai
-      Get.offAllNamed('/Login');
 
-      // Agar aapne routes define nahi kiye to aise karein:
-      // Get.offAll(LoginScreen());
-
-    } catch (e) {
-      Get.snackbar("Error", "not logout");
-    }
-  }
+  // Future<void> logout() async {
+  //   try {
+  //     SharedPreferences prefs = await SharedPreferences.getInstance();
+  //
+  //     // 1. Local storage se data delete karein
+  //     await prefs.remove('email');
+  //
+  //
+  //     await prefs.remove('name');
+  //     // Agar sab kuch delete karna hai to: await prefs.clear();
+  //
+  //     // 2. GetX ki madad se Login screen par navigate karein
+  //     // Get.offAll() purani sari screens (history) ko khatam kar deta hai
+  //     Get.offAllNamed('/Login');
+  //
+  //     // Agar aapne routes define nahi kiye to aise karein:
+  //     // Get.offAll(LoginScreen());
+  //
+  //   } catch (e) {
+  //     Get.snackbar("Error", "not logout");
+  //   }
+  // }
 
   Future<void> verifyOtp(BuildContext context) async {
     // 1. Validation
@@ -172,6 +171,43 @@ class AuthController extends GetxController {
       } else {
         // Agar OTP galat ho
         Utils.showToast(response?['message'] ?? 'Invalid OTP, please try again', true);
+      }
+    } catch (e) {
+      Utils.showToast('Error: ${e.toString()}', true);
+    }
+  }
+
+  Future<void> handleResendOtp(BuildContext context) async {
+    // 1. Storage se token lein (Jahan aapne login ke waqt save kiya tha)
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('auth_token');
+
+    // 2. Request Body (Sirf otpType agar backend wahi mang raha hai)
+    final body = {
+      "otpType": "VERIFY_EMAIL"
+    };
+
+    // 3. Headers (Yahan Token pass hoga)
+    final Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token', // 'Bearer' lagana mat bhoolna
+    };
+
+    try {
+      // 4. API Call
+      // Note: Agar aapka baseService headers accept nahi karta,
+      // toh aapko BaseService class ko update karna padega.
+      var response = await baseService.basePostAPI(
+        ApiEndPoints.resendOtp,
+        body,
+        loading: true,
+      // Pass the headers here
+      );
+
+      if (response != null && (response['success'] == true || response['statusCode'] == 200)) {
+        Utils.showToast(response['message'] ?? 'OTP Sent Successfully', false);
+      } else {
+        Utils.showToast(response?['message'] ?? 'Failed to resend OTP', true);
       }
     } catch (e) {
       Utils.showToast('Error: ${e.toString()}', true);

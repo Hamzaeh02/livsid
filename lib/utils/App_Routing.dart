@@ -27,21 +27,9 @@ class AppRoutes {
     GetPage(name: '/WelcomeScreen', page: () =>  WelcomeScreen()),
     // Option 2: Change GetPage name to match navigation
     GetPage(
-        name: '/ProductDetail', // capital 'D'
-        page: () => ProductDetailWidget2(
-            imagepath: 'assets/png/foodimg.png',
-            imagepath1: 'assets/png/image1.png',
-            imagepath2: 'assets/png/image2.png',
-            imagepath3: 'assets/png/image3.png',
-            imagepath4: 'assets/png/image4.png',
-            name: "Bali Hai Restaurant",
-            initialIndex: 1,
-            rating: "4.7",
-            review: "800 Reviews",
-            location: "19 Santa Teresa Blvd"
-        )
+      name: '/ProductDetail',
+      page: () =>  ProductDetailScreen(), // Widget call nahi karna, Screen class call karni hai
     ),
-
 
     GetPage(name: '/ProductDetailScroll', page: () =>  ProductDetailScrollView()),GetPage(name: '/WeatherPage', page: () =>  WeatherScreen()),
 

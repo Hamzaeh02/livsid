@@ -15,12 +15,12 @@ class WeatherScreen extends StatelessWidget {
     'clear': {
       'gradient': const LinearGradient(colors: [Color(0xFF4facfe), Color(0xFF00f2fe)], begin: Alignment.topCenter, end: Alignment.bottomCenter),
       'image': 'assets/png/hazzy.png',
-      'textColor': Colors.white,
+      'textColor': whiteColor,
     },
     'thunderstorm': {
       'gradient': const LinearGradient(colors: [Color(0xFF0F2027), Color(0xFF203A43), Color(0xFF2C5364)], begin: Alignment.topCenter, end: Alignment.bottomCenter),
       'image': 'assets/png/thunderstrom.png',
-      'textColor': Colors.white,
+      'textColor': whiteColor,
     },
     'haze': {
       'gradient': const LinearGradient(colors: [Color(0xFF8e9eab), Color(0xFFeef2f3)], begin: Alignment.topCenter, end: Alignment.bottomCenter),
@@ -35,12 +35,12 @@ class WeatherScreen extends StatelessWidget {
     'clouds': {
       'gradient': const LinearGradient(colors: [Color(0xFFbdc3c7), Color(0xFF2c3e50)], begin: Alignment.topCenter, end: Alignment.bottomCenter),
       'image': 'assets/png/sunnyweather.png',
-      'textColor': Colors.white,
+      'textColor': whiteColor,
     },
     'rain': {
       'gradient': const LinearGradient(colors: [Color(0xFF203A43), Color(0xFF2C5364)], begin: Alignment.topCenter, end: Alignment.bottomCenter),
       'image': 'assets/png/thunderstrom.png',
-      'textColor': Colors.white,
+      'textColor':whiteColor,
     },
     'snow': {
       'gradient': const LinearGradient(colors: [Color(0xFFE6E9F0), Color(0xFFEEF1F5)], begin: Alignment.topCenter, end: Alignment.bottomCenter),
@@ -137,9 +137,9 @@ class WeatherScreen extends StatelessWidget {
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 4.w),
                         decoration: BoxDecoration(
-                          color: currentWeather['textColor'] == Colors.white
-                              ? Colors.white.withOpacity(0.15)
-                              : Colors.black.withOpacity(0.05),
+                          color: currentWeather['textColor'] == whiteColor
+                              ? whiteColor.withOpacity(0.15)
+                              : blackColor.withOpacity(0.05),
                           borderRadius: BorderRadius.circular(25),
                           border: Border.all(color: currentWeather['textColor'].withOpacity(0.2)),
                         ),
