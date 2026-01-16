@@ -12,8 +12,8 @@ Widget tabIndicators(int currentIndex) {
       return AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         margin: const EdgeInsets.symmetric(horizontal: 4),
-        height: 8,
-        width: isActive ? 8 : 8, // active indicator wider
+        height: 6,
+        width: isActive ? 6 : 6, // active indicator wider
         decoration: BoxDecoration(
           color: isActive ? blackColor : Colors.grey.shade400,
           borderRadius: BorderRadius.circular(10),

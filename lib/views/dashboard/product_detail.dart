@@ -260,7 +260,7 @@ class ProductDetailScreen extends StatelessWidget {
                   CustomButton(
                     borderRadius: BorderRadius.circular(23),
                     text: "Add to Mydeals",
-                    btnColor: bluecolor,
+                    btnColor: otpscreenblue,
                     fontWeight: FontWeight.w600,
                     height: 6.h,
                     width: 100.w,

@@ -12,7 +12,7 @@ import '../../utils/utility.dart';
 import '../widgets/util.dart';
 
 class BaseService {
-  late String baseURL = "https://liv-sd-server-7gsy.vercel.app/";
+  late String baseURL = "https://liv-sd-server-7gsy.vercel.app";
   late String endPoint;
   late String Url = '$baseURL$endPoint';
   late String baseURLStripe = "";

@@ -119,7 +119,7 @@ class Signup extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         // Reduced font size from 15.sp to 13.sp
-        style: TextStyle(color: myColor, fontSize: 12.sp),
+        style: TextStyle(color: myColor, fontSize: 14.sp),
         validator: (value) {
           if (value == null || value.isEmpty) return "Field required";
           if (isEmail) return HelperFunction.emailValidate(value);
@@ -151,7 +151,7 @@ class Signup extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         obscureText: !authController.isPasswordVisible.value,
-        style: TextStyle(color: myColor, fontSize: 12.sp),
+        style: TextStyle(color: myColor, fontSize: 14.sp),
         validator: (value) => HelperFunction.passwordValidate(value!),
         decoration: InputDecoration(
           hintText: hint,

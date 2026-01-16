@@ -28,7 +28,7 @@ final WelcomeController controller = Get.put(WelcomeController());
 final WelcomeControllers shopLocalController = Get.put(WelcomeControllers());
 
 final ProductController productController = Get.put(ProductController());
-final PageController pageController = PageController(  viewportFraction: 0.45,);
+final PageController pageController = PageController(  viewportFraction: 0.48,);
 final ValueNotifier<int> currentIndexNotifier = ValueNotifier<int>(0);
 
 
@@ -419,7 +419,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               return Padding(
                                 padding: EdgeInsets.only(right: 2.w),
                                 child: SizedBox(
-                                  width: 40.w,
+                                  width: 43.w,
                                   child: Card(
                                     index: index,
                                     imagePath: item.coverImage ?? "",
